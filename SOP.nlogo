@@ -10,14 +10,25 @@ personas-own [mi-umbral mi-calidad de-pie? mis-vecinos vecinos-distintos]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to setup
-  random-seed 123
+  ;random-seed 123
   clear-all
   reset-ticks
+
+  ; fijar tamaño del mundo
+
+  fijar-mundo
+
   set prob-asientos-llenos 1.0
+
   set n-personas (max-pxcor + 1) * (max-pycor + 1)
+
   set iteracion 0
+
+  ; cantidad de iteraciones para verificar convergencia
+
   set reloj-max  5
-  set reloj      reloj-max
+
+  set reloj  reloj-max
 
   ask patches
   [
@@ -37,22 +48,6 @@ to setup
      ]
 
   ]
-
-;  ask patches
-;  [
-;      set pcolor black
-;
-;      if (random-float 1.0 < 1.0)
-;      [
-;        sprout-personas 1
-;        [
-;          set shape "square"
-;          set color red
-;          set mi-umbral 0.5
-;          set de-pie? False
-;        ]
-;      ]
-;  ]
 
   set lista-random (shuffle ([who] of personas))
 
@@ -83,6 +78,28 @@ to setup
 
 end
 
+
+;; para especificar tamaño de los parches a partir de la cantidad de filas y asientos
+
+to fijar-mundo
+
+  resize-world 0 (filas - 1) 0 (filas - 1)
+
+  if (filas - 1) = 19
+  [
+     set-patch-size 21.45
+  ]
+
+  if (filas - 1) = 39
+  [
+     set-patch-size 10.7
+  ]
+
+  if (filas - 1) = 79
+  [
+     set-patch-size 5.38
+  ]
+end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; procedimiento para terminar presentacion
@@ -147,8 +164,6 @@ to reaccion_a_otros
     async-incentive
   ]
 
-
-  ;if ((count personas with [de-pie = 0]) = conteo-anterior and iteracion > 5)
   if ((count personas with [de-pie? = False]) = conteo-anterior)
   [
 
@@ -312,13 +327,13 @@ to async-incentive
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-403
-32
-771
-421
+402
+31
+839
+489
 -1
 -1
-17.9
+21.45
 1
 10
 1
@@ -396,7 +411,7 @@ BUTTON
 165
 NIL
 reaccion_a_otros
-NIL
+T
 1
 T
 OBSERVER
@@ -408,9 +423,9 @@ NIL
 
 MONITOR
 68
-299
+371
 162
-344
+416
 De pie
 count turtles with [de-pie? = True]
 0
@@ -418,10 +433,10 @@ count turtles with [de-pie? = True]
 11
 
 PLOT
-828
-42
-1221
-424
+860
+34
+1321
+495
 Grafica
 Iteracion
 Porciento
@@ -438,9 +453,9 @@ PENS
 
 MONITOR
 176
-299
+371
 271
-344
+416
 Sentados
 count turtles with [de-pie? = False]
 17
@@ -449,9 +464,9 @@ count turtles with [de-pie? = False]
 
 MONITOR
 282
-300
+372
 374
-345
+417
 Total
 count turtles
 17
@@ -460,9 +475,9 @@ count turtles
 
 MONITOR
 67
-367
+439
 163
-412
+484
 NI
 NI
 17
@@ -471,9 +486,9 @@ NI
 
 MONITOR
 176
-367
+439
 272
-412
+484
 SM
 precision SM 1
 17
@@ -482,9 +497,9 @@ precision SM 1
 
 MONITOR
 283
-367
+439
 374
-412
+484
 IE
 IE
 17
@@ -492,23 +507,33 @@ IE
 11
 
 CHOOSER
-67
-216
-228
-261
+149
+186
+310
+231
 update
 update
 "Sync" "ASync" "ASync-Incentive"
-0
+1
 
 CHOOSER
-242
-215
-380
-260
+150
+246
+308
+291
 conteo-vecinos?
 conteo-vecinos?
 "5-vecinos" "cono" "circulo"
+0
+
+CHOOSER
+148
+305
+309
+350
+filas
+filas
+20 40 80
 0
 
 @#$#@#$#@
